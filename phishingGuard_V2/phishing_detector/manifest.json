@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "PhishingGuard",
+  "version": "1.0",
+  "description": "Sends current page URL to my Java server",
+  "host_permissions": [
+    "http://localhost:8080/*"
+  ],
+  "permissions": [
+    "scripting",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "action": {}
+}
