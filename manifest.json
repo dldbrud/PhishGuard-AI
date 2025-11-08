@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "AI Web Extension Test",
+  "version": "1.1",
+  "description": "URL 감지 → background 판단 → 페이지에 경고 오버레이 표시(기초).",
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "permissions": [
+    "activeTab",       
+    "tabs",               
+    "storage"           
+  ],
+
+  "host_permissions": [
+    "http://localhost:8000/*",   
+    "https://*/*",
+    "http://*/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_start"
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icon.png", "32": "icon.png" }
+  },
+
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
