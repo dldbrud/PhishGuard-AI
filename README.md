@@ -21,11 +21,11 @@
 아래있는 파일들만 사용하면 됨 server, venv는 다 fastapi관련임
 
 extension/
-├─ background.js # 백엔드 서버와 통신, 정책 판단
-├─ contentScript.js # 웹페이지 감시, 오버레이 표시
-├─ overlay.css # 경고/차단 UI 스타일
-├─ manifest.json # 확장 설정 및 권한 정의
-└─ icon.png # 확장 아이콘
++ background.js # 백엔드 서버와 통신, 정책 판단
++ contentScript.js # 웹페이지 감시, 오버레이 표시
++ overlay.css # 경고/차단 UI 스타일
++ manifest.json # 확장 설정 및 권한 정의
++ icon.png # 확장 아이콘
 
 
 ---
