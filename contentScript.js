@@ -12,27 +12,39 @@ try {
   // console.warn("메시지 전송 실패(무시 가능):", e);
 }
 
-// ▼ background가 보낸 "오버레이 띄워" 명령을 수신
-chrome.runtime.onMessage.addListener((request) => {        // 메시지 수신
-  if (request.action === "showOverlay") {                  // 오버레이 명령이면
-    showOverlay(request.rating, request.reason);           // 오버레이 렌더
+/* ------------------------------------------------------------------
+   ▼ background가 보낸 "오버레이 띄워" 명령 수신
+      - 위험/경고 여부에 따라 오버레이 표시
+      - 위험 + immediateClose 플래그가 true면 일정 시간 후 탭 자동 종료
+------------------------------------------------------------------ */
+chrome.runtime.onMessage.addListener((request) => {        
+  if (request.action === "showOverlay") {                  // background.js → showOverlay 명령
+    showOverlay(request.rating, request.reason);           // 오버레이 렌더링
+
+    // 🔥 추가된 로직: "즉시 닫기" 플래그가 true이고 위험 등급일 경우 자동 차단
+    if (request.immediateClose && request.rating === "위험") {
+      setTimeout(() => {
+        window.close();                                    // 현재 탭 닫기
+      }, 2000);                                            // 약간의 지연 후 (2초) 닫기
+    }
   }
 });
 
-// ▼ 경고/차단 오버레이 DOM 생성
+/* ------------------------------------------------------------------
+   ▼ 경고/차단 오버레이 DOM 생성
+      - 위험이면 '접근 차단', 경고면 '주의 필요'
+      - 버튼 클릭 시 오버레이 닫기 / 무시하기
+------------------------------------------------------------------ */
 function showOverlay(rating, reason) {
-  // 중복 방지
-  if (document.getElementById('security-overlay-xyz')) return; // 이미 있다면 스킵
+  if (document.getElementById('security-overlay-xyz')) return; // 중복 방지
 
-  const isDanger = (rating === "위험");                         // 위험 여부 플래그
+  const isDanger = (rating === "위험");
 
-  // 루트
-  const overlay = document.createElement('div');                // 루트 div 생성
-  overlay.id = 'security-overlay-xyz';                          // 고유 ID
-  overlay.className = isDanger ? 'overlay-danger-xyz' : 'overlay-warning-xyz'; // 등급별 클래스
+  const overlay = document.createElement('div');
+  overlay.id = 'security-overlay-xyz';
+  overlay.className = isDanger ? 'overlay-danger-xyz' : 'overlay-warning-xyz';
 
-  // 내용
-  overlay.innerHTML = `                                         // 중앙 박스 마크업
+  overlay.innerHTML = `
     <div class="overlay-box-xyz">
       <h1>${isDanger ? '접근 차단' : '주의 필요'}</h1>
       <p class="rating-text-xyz">${rating}</p>
@@ -41,25 +53,21 @@ function showOverlay(rating, reason) {
     </div>
   `;
 
-  // DOM 삽입
+  // body 준비 여부 확인 후 DOM 삽입
   (document.body ? Promise.resolve() : new Promise(r => document.addEventListener('DOMContentLoaded', r)))
-    .then(() => {                                              // body가 준비되면
-      document.body.appendChild(overlay);                      // 오버레이 삽입
+    .then(() => {
+      document.body.appendChild(overlay);
 
-      // 버튼 동작
-      const btn = document.getElementById('overlay-action-btn-xyz'); // 버튼 찾기
+      // 버튼 클릭 이벤트
+      const btn = document.getElementById('overlay-action-btn-xyz');
       if (btn) {
-        btn.addEventListener('click', (e) => {                 // 클릭 핸들러
-          e.stopPropagation();                                 // 이벤트 전파 중단
-          if (isDanger) {
-            overlay.remove();                                  // 위험: 닫기
-          } else {
-            overlay.remove();                                  // 경고: 무시 후 닫기
-          }
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          overlay.remove();                                // 경고든 위험이든 클릭 시 닫기
         });
       }
 
-      // 차단 시 스크롤 잠금(선택)
-      if (isDanger) document.body.style.overflow = 'hidden';   // 스크롤 방지
+      // 위험일 경우 스크롤 잠금
+      if (isDanger) document.body.style.overflow = 'hidden';
     });
 }
