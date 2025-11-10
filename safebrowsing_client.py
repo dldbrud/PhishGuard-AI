@@ -35,7 +35,6 @@ async def check_safe_browsing(url: str, client: httpx.AsyncClient) -> tuple[str,
         response.raise_for_status() 
         data = response.json()
         
-        # 조율안의 요구사항: "위험/정상" 같은 내부 통일 형태로 변환
         if data.get('matches'):
             return (GSB_STATUS_DANGEROUS, data) # '위험' 상태와 원본 데이터 반환
         else:
