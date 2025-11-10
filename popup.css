@@ -1,0 +1,248 @@
+/* 공통 폰트 및 색상 스킴 */
+:root {
+  color-scheme: light dark;
+  font-size: 16px;
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+/* 배경 그래디언트와 기본 색상 */
+body {
+  margin: 0;
+  padding: 0;
+  background: #0f172a;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #312e81 100%);
+  color: #f8fafc;
+  min-width: 320px;
+}
+
+/* 팝업 기본 레이아웃 */
+.popup {
+  width: 360px;
+  min-height: 400px;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 헤더 영역 */
+.popup__header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.popup__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.popup__url {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #cbd5f5;
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+/* 검사 상태 카드 */
+.popup__status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* 상태 뱃지 스타일 */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: fit-content;
+}
+
+.status--idle {
+  background: rgba(148, 163, 184, 0.2);
+  color: #f8fafc;
+}
+
+.status--pending {
+  background: rgba(250, 204, 21, 0.2);
+  color: #fbbf24;
+}
+
+.status--safe {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+.status--warning {
+  background: rgba(250, 204, 21, 0.2);
+  color: #fbbf24;
+}
+
+.status--danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.status--error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.status__message {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.status__reason {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #cbd5f5;
+  line-height: 1.5;
+}
+
+/* 사용자 액션 버튼 그룹 */
+.popup__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* 공통 버튼 스타일 */
+.btn {
+  flex: 1 1 45%;
+  min-width: 140px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn--primary {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.btn--primary:hover {
+  background: #0ea5e9;
+}
+
+.btn--danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.btn--danger:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+/* 분석 상세 정보 영역 */
+.popup__details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popup__subtitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+/* 서버에서 받은 텍스트 출력 */
+.popup__response {
+  margin: 0;
+  padding: 12px;
+  min-height: 60px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.6;
+}
+
+.popup__response p {
+  margin: 8px 0;
+}
+
+.popup__response strong {
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+/* 라이트 모드 대응 */
+@media (prefers-color-scheme: light) {
+  body {
+    background: #f8fafc;
+    color: #0f172a;
+  }
+
+  .popup__title {
+    color: #0f172a;
+  }
+
+  .popup__url {
+    color: #475569;
+  }
+
+  .popup__status {
+    background: rgba(226, 232, 240, 0.6);
+    border-color: rgba(148, 163, 184, 0.4);
+  }
+
+  .popup__response {
+    background: rgba(241, 245, 249, 0.9);
+    color: #0f172a;
+  }
+
+  .popup__subtitle {
+    color: #0f172a;
+  }
+
+  .status__reason {
+    color: #475569;
+  }
+
+  .btn--danger {
+    color: #b91c1c;
+  }
+}
+

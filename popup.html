@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>PhishGuard-AI</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <!-- 팝업 전체 컨테이너 -->
+    <main class="popup" role="main">
+      <!-- 현재 탭 URL과 제목 -->
+      <header class="popup__header">
+        <h1 class="popup__title">🛡️ PhishGuard-AI</h1>
+        <p id="current-url" class="popup__url">현재 페이지 정보를 불러오는 중...</p>
+      </header>
+
+      <!-- 최신 검사 상태와 분석 결과 -->
+      <section class="popup__status" aria-live="polite">
+        <div id="status-badge" class="status status--idle">대기 중</div>
+        <p id="status-message" class="status__message">확인 요청을 기다리는 중입니다.</p>
+        <p id="status-reason" class="status__reason"></p>
+      </section>
+
+      <!-- 사용자 액션 버튼 영역 -->
+      <section class="popup__actions">
+        <button id="scan-button" class="btn btn--primary">다시 검사</button>
+        <button id="report-button" class="btn btn--danger">신고하기</button>
+      </section>
+
+      <!-- 분석 결과 상세 정보 -->
+      <section class="popup__details" id="details-section" style="display: none;">
+        <h2 class="popup__subtitle">분석 상세</h2>
+        <div id="analysis-details" class="popup__response"></div>
+      </section>
+    </main>
+
+    <!-- 팝업 동작 로직 -->
+    <script src="popup.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,263 @@
+// DOM 레퍼런스: 상태 표시 영역과 버튼 요소
+const statusBadge = document.getElementById("status-badge");
+const statusMessage = document.getElementById("status-message");
+const statusReason = document.getElementById("status-reason");
+const currentUrlElement = document.getElementById("current-url");
+const detailsSection = document.getElementById("details-section");
+const analysisDetails = document.getElementById("analysis-details");
+
+const scanButton = document.getElementById("scan-button");
+const reportButton = document.getElementById("report-button");
+
+// 현재 팝업이 제어할 탭 정보
+let currentUrl = null;
+let currentAnalysis = null;
+
+// 팝업 초기화 진입점
+init();
+
+// 이벤트 리스너와 기본 상태 세팅
+function init() {
+  scanButton.addEventListener("click", handleRescanClick);
+  reportButton.addEventListener("click", handleReportClick);
+
+  // 현재 활성 탭의 정보를 읽어 UI에 표시하고 분석 요청
+  loadCurrentTabAndAnalyze();
+}
+
+// 현재 활성 탭 정보를 가져와서 분석 요청
+function loadCurrentTabAndAnalyze() {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const runtimeError = chrome.runtime.lastError;
+    if (runtimeError) {
+      setStatus("error", "탭 정보를 가져올 수 없습니다.", runtimeError.message);
+      return;
+    }
+
+    if (!tabs || !tabs.length) {
+      setStatus("error", "활성 탭을 찾을 수 없습니다.", "");
+      return;
+    }
+
+    const tab = tabs[0];
+    currentUrl = tab.url || tab.pendingUrl || "";
+
+    // URL이 없는 경우 (예: chrome:// 페이지)
+    if (!currentUrl || currentUrl.startsWith("chrome://") || currentUrl.startsWith("chrome-extension://")) {
+      currentUrlElement.textContent = "분석할 수 없는 페이지입니다.";
+      setStatus("idle", "이 페이지는 분석할 수 없습니다.", "");
+      return;
+    }
+
+    currentUrlElement.textContent = currentUrl;
+    setStatus("pending", "분석 중...", "");
+
+    // background.js에 분석 요청 (action: "analyzePopupUrl")
+    requestAnalysis();
+  });
+}
+
+// background.js에 분석 요청 전송
+function requestAnalysis() {
+  chrome.runtime.sendMessage(
+    { action: "analyzePopupUrl" },
+    (response) => {
+      const runtimeError = chrome.runtime.lastError;
+      if (runtimeError) {
+        setStatus("error", "통신 오류가 발생했습니다.", runtimeError.message);
+        return;
+      }
+
+      if (!response) {
+        setStatus("error", "서버 응답이 없습니다.", "");
+        return;
+      }
+
+      // 분석 결과 처리
+      if (response.ok && response.analysis) {
+        currentAnalysis = response.analysis;
+        applyAnalysisResult(response.analysis);
+      } else if (response.analysis) {
+        // ok: false지만 analysis가 있는 경우 (1차 필터에서 차단됨)
+        currentAnalysis = response.analysis;
+        applyAnalysisResult(response.analysis);
+      } else {
+        setStatus("error", "분석 결과를 받을 수 없습니다.", "");
+      }
+    }
+  );
+}
+
+// 분석 결과를 UI에 반영
+function applyAnalysisResult(analysis) {
+  const { rating, reason, score } = analysis || {};
+
+  // 등급에 따른 상태 설정
+  let statusType = "idle";
+  let statusText = "대기 중";
+  let messageText = "";
+
+  switch (rating) {
+    case "safe":
+    case "안전":
+      statusType = "safe";
+      statusText = "안전";
+      messageText = "이 사이트는 안전합니다.";
+      break;
+    
+    case "warning":
+    case "경고":
+      statusType = "warning";
+      statusText = "경고";
+      messageText = "이 사이트는 주의가 필요합니다.";
+      break;
+    
+    case "danger":
+    case "위험":
+      statusType = "danger";
+      statusText = "위험";
+      messageText = "이 사이트는 위험합니다!";
+      break;
+    
+    default:
+      statusType = "error";
+      statusText = "알 수 없음";
+      messageText = "분석 결과를 확인할 수 없습니다.";
+  }
+
+  // 상태 UI 업데이트
+  setStatus(statusType, statusText, reason || messageText);
+
+  // 상세 정보 표시
+  if (score !== undefined || reason) {
+    let detailsHtml = "";
+    if (score !== undefined) {
+      detailsHtml += `<p><strong>위험도 점수:</strong> ${score}/10</p>`;
+    }
+    if (reason) {
+      detailsHtml += `<p><strong>사유:</strong> ${reason}</p>`;
+    }
+    analysisDetails.innerHTML = detailsHtml;
+    detailsSection.style.display = "block";
+  } else {
+    detailsSection.style.display = "none";
+  }
+}
+
+// 상태 뱃지와 메시지 갱신
+function setStatus(status, message, reason) {
+  // 상태 뱃지 클래스 초기화
+  statusBadge.className = "status";
+  statusBadge.classList.add(`status--${status || "idle"}`);
+
+  // 상태 텍스트 설정
+  switch (status) {
+    case "pending":
+      statusBadge.textContent = "검사 중";
+      break;
+    case "danger":
+      statusBadge.textContent = "위험";
+      break;
+    case "warning":
+      statusBadge.textContent = "경고";
+      break;
+    case "safe":
+      statusBadge.textContent = "안전";
+      break;
+    case "error":
+      statusBadge.textContent = "오류";
+      break;
+    default:
+      statusBadge.textContent = "대기 중";
+  }
+
+  statusMessage.textContent = message || "";
+  statusReason.textContent = reason || "";
+}
+
+// 다시 검사 버튼 처리: 서버에 재전송 요청
+function handleRescanClick() {
+  if (!currentUrl) {
+    setStatus("error", "URL 정보가 없습니다.", "");
+    return;
+  }
+
+  setStatus("pending", "다시 분석 중...", "");
+  requestAnalysis();
+}
+
+// 신고하기 버튼 처리: background.js에 신고 요청
+function handleReportClick() {
+  if (!currentUrl) {
+    setStatus("error", "신고할 URL이 없습니다.", "");
+    return;
+  }
+
+  // 사용자 확인
+  const confirmed = confirm(`다음 URL을 신고하시겠습니까?\n\n${currentUrl}`);
+  if (!confirmed) {
+    return;
+  }
+
+  setStatus("pending", "신고 처리 중...", "");
+
+  // background.js에 신고 요청
+  chrome.runtime.sendMessage(
+    {
+      action: "reportUrl",
+      reportedUrl: currentUrl,
+      suggestedUrl: null // 나중에 추천 URL 기능 구현 시 사용
+    },
+    (response) => {
+      const runtimeError = chrome.runtime.lastError;
+      if (runtimeError) {
+        setStatus("error", "신고 처리 중 오류가 발생했습니다.", runtimeError.message);
+        return;
+      }
+
+      if (!response) {
+        setStatus("error", "신고 서버 응답이 없습니다.", "");
+        return;
+      }
+
+      // 신고 성공
+      if (response.ok) {
+        setStatus("safe", "신고가 접수되었습니다.", response.report?.message || "감사합니다.");
+      } else {
+        setStatus("error", "신고 처리에 실패했습니다.", response.report?.message || "다시 시도해주세요.");
+      }
+    }
+  );
+  }
+
+  setStatus("pending", "신고 중...", "");
+
+  // background.js에 신고 요청 (action: "reportUrl")
+  chrome.runtime.sendMessage(
+    {
+      action: "reportUrl",
+      reportedUrl: currentUrl,
+      suggestedUrl: null, // 필요시 수정 가능
+    },
+    (response) => {
+      const runtimeError = chrome.runtime.lastError;
+      if (runtimeError) {
+        setStatus("error", "통신 오류가 발생했습니다.", runtimeError.message);
+        return;
+      }
+
+      if (!response) {
+        setStatus("error", "서버 응답이 없습니다.", "");
+        return;
+      }
+
+      if (response.ok && response.report) {
+        setStatus("safe", "신고가 접수되었습니다.", "감사합니다. 검토 후 조치하겠습니다.");
+        alert("신고가 성공적으로 접수되었습니다.");
+      } else {
+        setStatus("error", "신고에 실패했습니다.", response.error || "알 수 없는 오류");
+      }
+    }
+  );
+
+
