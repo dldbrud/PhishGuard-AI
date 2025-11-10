@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>PhishingGuard</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 12px;
+      width: 230px;
+      background: #f6f7fb;
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0 0 8px;
+      font-weight: 600;
+      color: #222;
+    }
+    p.desc {
+      margin: 0 0 10px;
+      font-size: 11px;
+      color: #666;
+    }
+    button {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    #btn-block {
+      background-color: #e74c3c;
+      color: #fff;
+    }
+    #btn-block:hover {
+      background-color: #c0392b;
+    }
+    #btn-unblock {
+      background-color: #bdc3c7;
+      color: #2c3e50;
+    }
+    #btn-unblock:hover {
+      background-color: #95a5a6;
+    }
+    #status {
+      margin-top: 6px;
+      font-size: 10px;
+      color: #555;
+      min-height: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>PhishingGuard</h1>
+  <p class="desc">현재 탭 URL을 기준으로 개인 차단을 설정하거나 해제합니다.</p>
+
+  <button id="btn-block">차단하기 (신고 + 나만 차단)</button>
+  <button id="btn-unblock">차단 해제 (나만)</button>
+
+  <div id="status"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
