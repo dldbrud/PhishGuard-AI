@@ -1,1 +1,37 @@
-PhishGuard-AI/
+--- 1. Python (가상환경, 캐시) ---
+
+가상환경(venv, my_venv 등) 폴더를 무시합니다.
+
+venv/
+my_venv/
+.venv/
+
+파이썬 캐시 파일을 무시합니다.
+
+pycache/
+*.pyc
+
+--- 2. 중요: 보안 (비밀 키) ---
+
+절대로 Git에 올리면 안 되는 .env 파일을 무시합니다.
+
+.env
+
+--- 3. 데이터베이스 및 로그 ---
+
+로컬에서 테스트하는 데이터베이스 파일(SQLite)을 무시합니다.
+
+*.db
+*.sqlite
+*.sqlite3
+
+생성된 로그 또는 데이터 파일(CSV 등)을 무시합니다.
+
+*.log
+*.csv
+
+--- 4. IDE (VS Code) ---
+
+VS Code 에디터 설정 폴더를 무시합니다.
+
+.vscode/
