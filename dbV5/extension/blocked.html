@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishingGuard - 차단됨</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 60px 20px;
+      color: #333;
+    }
+    .card {
+      display: inline-block;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      padding: 40px 50px;
+      max-width: 600px;
+    }
+    h1 {
+      color: #e74c3c;
+      font-size: 26px;
+      margin-bottom: 16px;
+    }
+    p {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    #reason {
+      margin-top: 20px;
+      background: #fff4f4;
+      border: 1px solid #e0b4b4;
+      border-radius: 8px;
+      padding: 15px;
+      color: #b03030;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    small {
+      display: block;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🚫 접근이 차단되었습니다</h1>
+    <p>PhishingGuard가 이 사이트를 잠재적으로 위험하다고 판단했습니다.</p>
+    <div id="reason">차단 사유를 불러오는 중...</div>
+    <small>※ AI 분석 또는 신고/개인 설정에 따라 차단되었습니다.</small>
+  </div>
+
+  <!-- ✅ 코드 없이 src만 있는 외부 스크립트 -->
+  <script src="blocked.js"></script>
+</body>
+</html>
+
