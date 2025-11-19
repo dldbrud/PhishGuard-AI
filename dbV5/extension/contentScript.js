@@ -56,7 +56,7 @@
     `;
     document.body.appendChild(box);
 
-    // 스타일 동일
+    // 스타일 먼저 적용
     const style = document.createElement("style");
     style.textContent = `
       #${FLOATING_ID} { position: fixed; top: 16px; right: 16px; z-index: 2147483646;
@@ -64,7 +64,7 @@
         padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 4px;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; }
       #pg-floating-header { font-weight: 600; font-size: 10px; color: #555;
-        user-select: none; padding-bottom: 2px; border-bottom: 1px solid rgba(0,0,0,0.08); text-align: center; }
+        user-select: none; padding-bottom: 2px; border-bottom: 1px solid rgba(0,0,0,0.08); text-align: center; cursor: move; }
       #pg-floating-buttons { display: flex; gap: 4px; margin-top: 2px; }
       #pg-floating-buttons button { border: none; border-radius: 6px; padding: 4px 6px;
         font-size: 10px; cursor: pointer; font-weight: 600; transition: 0.15s; white-space: nowrap; }
@@ -77,6 +77,44 @@
       .pg-url-item input[type="checkbox"] { margin: 0; }
     `;
     document.head.appendChild(style);
+
+    // 🖱️ 드래그 기능 추가
+    const header = document.getElementById("pg-floating-header");
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    header.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      isDragging = true;
+      
+      // 현재 위치를 left/top으로 먼저 고정
+      const rect = box.getBoundingClientRect();
+      box.style.left = `${rect.left}px`;
+      box.style.top = `${rect.top}px`;
+      box.style.right = "auto";
+      
+      // 오프셋 계산
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      header.style.cursor = "grabbing";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.clientX - offsetX;
+      const y = e.clientY - offsetY;
+      box.style.left = `${x}px`;
+      box.style.top = `${y}px`;
+    });
+
+    document.addEventListener("mouseup", () => {
+      if (isDragging) {
+        isDragging = false;
+        header.style.cursor = "move";
+      }
+    });
 
     // 버튼 이벤트
     const blockBtn = document.getElementById("pg-block-btn");
