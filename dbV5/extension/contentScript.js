@@ -33,25 +33,37 @@
     const box = document.createElement("div");
     box.id = FLOATING_ID;
     box.innerHTML = `
-      <div id="pg-floating-header">PhishingGuard</div>
-      <div id="pg-floating-buttons">
-        <button id="pg-block-btn">🚫 차단</button>
-        <button id="pg-unblock-btn">✅ 해제</button>
-        <button id="pg-list-btn">📂 내 차단 목록</button>
-      </div>
-      <div id="pg-list-panel" style="display:none;">
-        <div id="pg-list-inner"></div>
-        <button id="pg-unblock-selected-btn" style="
-          margin-top:4px;
-          width:100%;
-          padding:4px 0;
+      <div id="pg-floating-header">
+        <span>PhishingGuard</span>
+        <button id="pg-toggle-btn" style="
+          background:none;
           border:none;
-          border-radius:6px;
-          font-size:10px;
           cursor:pointer;
-          background:#bdc3c7;
-          color:#2c3e50;
-        ">선택 URL 차단 해제</button>
+          font-size:12px;
+          padding:0;
+          margin-left:4px;
+        ">▼</button>
+      </div>
+      <div id="pg-floating-content">
+        <div id="pg-floating-buttons">
+          <button id="pg-block-btn">🚫 차단</button>
+          <button id="pg-unblock-btn">✅ 해제</button>
+          <button id="pg-list-btn">📂 내 차단 목록</button>
+        </div>
+        <div id="pg-list-panel" style="display:none;">
+          <div id="pg-list-inner"></div>
+          <button id="pg-unblock-selected-btn" style="
+            margin-top:4px;
+            width:100%;
+            padding:4px 0;
+            border:none;
+            border-radius:6px;
+            font-size:10px;
+            cursor:pointer;
+            background:#bdc3c7;
+            color:#2c3e50;
+          ">선택 URL 차단 해제</button>
+        </div>
       </div>
     `;
     document.body.appendChild(box);
@@ -64,7 +76,10 @@
         padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 4px;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 11px; }
       #pg-floating-header { font-weight: 600; font-size: 10px; color: #555;
-        user-select: none; padding-bottom: 2px; border-bottom: 1px solid rgba(0,0,0,0.08); text-align: center; cursor: move; }
+        user-select: none; padding-bottom: 2px; border-bottom: 1px solid rgba(0,0,0,0.08); 
+        display: flex; align-items: center; justify-content: center; cursor: move; }
+      #pg-floating-content { display: flex; flex-direction: column; gap: 4px; transition: all 0.3s ease; }
+      #pg-floating-content.collapsed { display: none; }
       #pg-floating-buttons { display: flex; gap: 4px; margin-top: 2px; }
       #pg-floating-buttons button { border: none; border-radius: 6px; padding: 4px 6px;
         font-size: 10px; cursor: pointer; font-weight: 600; transition: 0.15s; white-space: nowrap; }
@@ -77,6 +92,16 @@
       .pg-url-item input[type="checkbox"] { margin: 0; }
     `;
     document.head.appendChild(style);
+
+    // 🔽 토글 기능 추가
+    const toggleBtn = document.getElementById("pg-toggle-btn");
+    const content = document.getElementById("pg-floating-content");
+    
+    toggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation(); // 드래그 방지
+      content.classList.toggle("collapsed");
+      toggleBtn.textContent = content.classList.contains("collapsed") ? "▶" : "▼";
+    });
 
     // 🖱️ 드래그 기능 추가
     const header = document.getElementById("pg-floating-header");
