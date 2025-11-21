@@ -67,8 +67,46 @@ def _get_or_create_user_id(client_id: str) -> int:
         conn.close()
 
 
+# 개인 오버라이드 설정 확인 (명시적으로 설정한 경우만 반환)
+def get_user_override_decision(client_id: str, normalized_url: str) -> int | None:
+    """
+    사용자가 명시적으로 설정한 오버라이드가 있는지 확인
+    반환값: 0 (허용), 1 (차단), None (설정 없음)
+    """
+    try:
+        user_id = _get_or_create_user_id(client_id)
+    except Exception:
+        return None
+
+    conn = get_connection()
+    if not conn:
+        return None
+
+    normalized_url = normalize_url(normalized_url)
+    url_hash = _make_url_hash(normalized_url)
+
+    try:
+        with conn.cursor() as cursor:
+            sql = """
+            SELECT decision
+            FROM user_url_overrides
+            WHERE user_id = %s AND url_hash = %s
+            LIMIT 1
+            """
+            cursor.execute(sql, (user_id, url_hash))
+            result = cursor.fetchone()
+            if result:
+                return int(result["decision"])
+            return None
+    except Exception as e:
+        print("[get_user_override_decision] 에러:", e)
+        return None
+    finally:
+        conn.close()
+
+
 # URL 차단 여부 확인
-# phishing_sites (전역) → user_url_overrides(개인) 순서로 확인
+# user_url_overrides(개인) → phishing_sites (전역) 순서로 확인 (개인 설정 우선)
 # 1: 차단, 0: 허용
 def check_url(client_id: str, normalized_url: str) -> int:
     try:
@@ -87,19 +125,7 @@ def check_url(client_id: str, normalized_url: str) -> int:
 
     try:
         with conn.cursor() as cursor:
-            # 1) 전역 차단
-            sql_global = """
-            SELECT is_blocked
-            FROM phishing_sites
-            WHERE url_hash = %s
-            LIMIT 1
-            """
-            cursor.execute(sql_global, (url_hash,))
-            g = cursor.fetchone()
-            if g:
-                return int(g["is_blocked"])
-
-            # 2) 개인 오버라이드
+            # 1) 개인 오버라이드 우선 체크 (사용자가 명시적으로 설정한 경우)
             sql_override = """
             SELECT decision
             FROM user_url_overrides
@@ -110,6 +136,18 @@ def check_url(client_id: str, normalized_url: str) -> int:
             o = cursor.fetchone()
             if o:
                 return int(o["decision"])
+
+            # 2) 전역 차단 확인
+            sql_global = """
+            SELECT is_blocked
+            FROM phishing_sites
+            WHERE url_hash = %s
+            LIMIT 1
+            """
+            cursor.execute(sql_global, (url_hash,))
+            g = cursor.fetchone()
+            if g:
+                return int(g["is_blocked"])
 
             # 3) 기본 허용
             return 0
@@ -193,7 +231,7 @@ def override_url(client_id: str, normalized_url: str, decision: int) -> bool:
         conn.close()
 
 
-# 개인 차단 해제 (override 삭제)
+# 개인 차단 해제 (decision=0으로 업데이트하여 명시적 허용)
 def remove_override_url(client_id: str, normalized_url: str) -> bool:
     try:
         user_id = _get_or_create_user_id(client_id)
@@ -211,13 +249,16 @@ def remove_override_url(client_id: str, normalized_url: str) -> bool:
 
     try:
         with conn.cursor() as cursor:
+            # decision=0 (허용)으로 설정하여 전역 차단보다 우선하도록
             sql = """
-            DELETE FROM user_url_overrides
-            WHERE user_id = %s AND url_hash = %s
+            INSERT INTO user_url_overrides (user_id, normalized_url, url_hash, decision, created_at)
+            VALUES (%s, %s, %s, 0, %s)
+            ON DUPLICATE KEY UPDATE decision = 0, created_at = %s
             """
-            cursor.execute(sql, (user_id, url_hash))
+            now = datetime.now()
+            cursor.execute(sql, (user_id, normalized_url, url_hash, now, now))
         conn.commit()
-        return cursor.rowcount > 0
+        return True
     except Exception as e:
         print("[remove_override_url] 에러:", e)
         return False

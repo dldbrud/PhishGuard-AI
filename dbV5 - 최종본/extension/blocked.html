@@ -29,11 +29,28 @@
       </div>
     </div>
 
-    <div class="action-area">
-      <button id="btn-return-safe" class="btn-back">안전한 페이지로 돌아가기</button>
+    <!-- 분석 결과 팝업 (popup 스타일) -->
+    <div id="analysis-popup" class="analysis-popup" style="display: none;">
+      <div class="popup-header">
+        🛡️ PhishingGuard
+        <button id="close-popup" class="close-btn">✕</button>
+      </div>
+      <div class="popup-body">
+        <div class="status-card">
+          <div id="popup-loader" class="loading">
+            <span class="spinner"></span>분석 중...
+          </div>
+          <div id="popup-result" style="display: none;">
+            <div class="status-text" id="popup-status">안전함</div>
+            <div class="score-display" id="popup-score">--</div>
+            <div class="reason-text" id="popup-reason"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script src="blocked.js"></script>
+  <script src="contentScript.js"></script>
 </body>
 </html>

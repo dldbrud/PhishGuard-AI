@@ -97,6 +97,10 @@ body {
 /* 하단 버튼 영역 */
 .action-area {
   margin-top: 30px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .btn-back {
@@ -114,4 +118,174 @@ body {
 
 .btn-back:hover {
   background-color: #34495e;
+}
+
+.btn-block {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.btn-block:hover {
+  background-color: #c0392b;
+}
+
+.btn-my-list {
+  background-color: #5b7ce6;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(91, 124, 230, 0.3);
+}
+
+.btn-my-list:hover {
+  background-color: #4a6cd4;
+}
+
+.btn-analyze {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.btn-analyze:hover {
+  background-color: #229954;
+}
+
+/* 분석 팝업 스타일 */
+.analysis-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
+  animation: popupFadeIn 0.3s ease;
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.popup-header {
+  background: #2c3e50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px 12px 0 0;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.popup-body {
+  padding: 20px;
+}
+
+.status-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.score-display {
+  font-size: 42px;
+  font-weight: 800;
+  margin: 10px 0;
+  color: #bdc3c7;
+}
+
+.score-display.safe { color: #27ae60; }
+.score-display.warn { color: #f39c12; }
+.score-display.danger { color: #e74c3c; }
+
+.status-text {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.reason-text {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+  background: #f1f3f5;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+  margin-top: 10px;
+  word-break: break-all;
+}
+
+.loading {
+  font-size: 12px;
+  color: #888;
+}
+
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ccc;
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 5px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

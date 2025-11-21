@@ -156,7 +156,12 @@
 
     // ✅ 현재 페이지 차단 해제
     unblockBtn.addEventListener("click", () => {
-      chrome.runtime.sendMessage({ type: "PG_UNBLOCK_URL", url: window.location.href });
+      chrome.runtime.sendMessage({ type: "PG_UNBLOCK_URL", url: window.location.href }, (response) => {
+        // 차단 해제 완료 후 페이지 새로고침
+        if (response && response.success) {
+          window.location.reload();
+        }
+      });
     });
 
     // 📂 내 차단 목록 표시
@@ -188,6 +193,13 @@
       try {
         await Promise.all(tasks);
         await loadMyBlockedUrls(listInner);
+        
+        // 현재 페이지가 해제 목록에 포함되어 있으면 새로고침
+        const currentUrl = window.location.href;
+        const wasUnblocked = Array.from(checkboxes).some(cb => cb.dataset.url === currentUrl);
+        if (wasUnblocked) {
+          window.location.reload();
+        }
       } catch (e) {
         console.error("[PhishingGuard] 선택 해제 에러:", e);
       }
