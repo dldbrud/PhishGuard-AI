@@ -14,7 +14,7 @@ def get_connection():
         conn = pymysql.connect(
             host=os.getenv("MYSQL_HOST", "localhost"),
             user=os.getenv("MYSQL_USER", "root"),
-            password=os.getenv("MYSQL_PASSWORD", ""),
+            password=os.getenv("MYSQL_PASSWORD", "dnflwlq094&"),
             database=os.getenv("MYSQL_DB", "phishing_guard"),
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor

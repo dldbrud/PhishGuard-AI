@@ -16,7 +16,7 @@ def get_connection():
         conn = pymysql.connect(
             host=os.getenv("MYSQL_HOST", "localhost"),
             user=os.getenv("MYSQL_USER", "root"),
-            password=os.getenv("MYSQL_PASSWORD", ""),
+            password=os.getenv("MYSQL_PASSWORD", "oJshLtgzPYmkIwNAyIQaIbMXWhFGoqAR"),
             database=os.getenv("MYSQL_DB", "phishing_guard"),
             port=int(os.getenv("MYSQL_PORT", "3306")),  # ✅ Railway 포트 반영
             charset="utf8mb4",

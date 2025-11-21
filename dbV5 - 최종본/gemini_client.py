@@ -15,14 +15,14 @@ async def analyze_url_with_gemini(url: str, client: httpx.AsyncClient) -> dict:
     if not GEMINI_API_KEY:
         raise ValueError("GEMINI_API_KEY가 .env에 설정되지 않았습니다.")
         
-    api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key={GEMINI_API_KEY}"
+    api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
     
     prompt = f"""
     당신은 피싱 사이트 탐지 전문 AI입니다. 다음 URL을 분석하고 요청 형식에 맞춰 응답해 주세요.
 
     [분석 기준]
     1. score: 피싱 의심 점수 (0~100)
-    2. is_typosquatting: 유명 사이트(예: naver, kakao)를 교묘하게 모방한 오타(Typosquatting)인지 (true/false), 
+    2. is_typosquatting: 유명 사이트(예: naver, kakao)를 교묘하게 모방한 오타(Typosquatting)인지 (true/false),
     3. suggested_url: 만약 is_typosquatting이 true라면, 올바른 공식 URL. 없다면 null
     4. reason: 분석 근거 요약
 

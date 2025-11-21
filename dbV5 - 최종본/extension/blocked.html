@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishingGuard - 위험 사이트 차단</title>
+  <link rel="stylesheet" href="blocked.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo-area">🛡️ PhishingGuard</div>
+
+    <div class="danger-card">
+      <h1 class="score-title" id="display-score">--점</h1>
+      <div class="score-subtitle" id="display-level">(분석 중...)</div>
+      
+      <div class="divider"></div>
+
+      <div class="analysis-box">
+        <div class="analysis-item">
+          <span class="label">Google Safe Browsing</span>
+          <span class="content" id="gsb-result">정보 없음</span>
+        </div>
+        
+        <div class="analysis-item">
+          <span class="label">Gemini AI 분석</span>
+          <span class="content" id="gemini-result">분석 내용을 불러오는 중...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-area">
+      <button id="btn-return-safe" class="btn-back">안전한 페이지로 돌아가기</button>
+    </div>
+  </div>
+
+  <script src="blocked.js"></script>
+</body>
+</html>
