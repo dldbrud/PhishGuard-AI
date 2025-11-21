@@ -32,14 +32,28 @@
     initFloating();
   }
 
+  // ✅ 4. 팝업에서 툴바 표시 메시지 수신
+  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.type === "SHOW_TOOLBAR") {
+      const box = document.getElementById(FLOATING_ID);
+      if (box) {
+        box.style.display = "flex";
+        chrome.storage.local.set({ toolbarVisible: true });
+      } else {
+        initFloating();
+      }
+    }
+  });
+
   function initFloating() {
     const box = document.createElement("div");
     box.id = FLOATING_ID;
     
     box.innerHTML = `
       <div id="pg-floating-header">
-        <span id="pg-header-text">PhishingGuard</span>
         <span id="pg-toggle-btn">▼</span>
+        <span id="pg-header-text">PhishingGuard</span>
+        <span id="pg-close-btn">✕</span>
       </div>
       <div id="pg-floating-content">
         <div id="pg-floating-buttons">
@@ -118,13 +132,32 @@
       
       #pg-header-text {
         flex: 1;
+        text-align: center;
       }
       
       #pg-toggle-btn {
-        font-size: 8px;
-        color: #888;
+        font-size: 10px;
+        color: #333;
         transition: transform 0.3s ease;
-        margin-left: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      
+      #pg-toggle-btn:hover {
+        background: rgba(0,0,0,0.05);
+      }
+      
+      #pg-close-btn {
+        font-size: 14px;
+        color: #888;
+        cursor: pointer;
+        transition: color 0.2s;
+        padding: 2px 4px;
+      }
+      
+      #pg-close-btn:hover {
+        color: #e74c3c;
       }
       
       #${FLOATING_ID}.collapsed #pg-toggle-btn {
@@ -207,6 +240,7 @@
     // --- 기능 로직 ---
     const header = document.getElementById("pg-floating-header");
     const toggleBtn = document.getElementById("pg-toggle-btn");
+    const closeBtn = document.getElementById("pg-close-btn");
     const floatingContent = document.getElementById("pg-floating-content");
     const blockBtn = document.getElementById("pg-block-btn");
     const listBtn = document.getElementById("pg-list-btn");
@@ -223,13 +257,22 @@
 
     // 🔽 토글 버튼 (접기/펼치기)
     let isCollapsed = false;
-    header.addEventListener("click", () => {
+    
+    toggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
       isCollapsed = !isCollapsed;
       if (isCollapsed) {
         box.classList.add("collapsed");
       } else {
         box.classList.remove("collapsed");
       }
+    });
+    
+    // ✕ 닫기 버튼 (툴바 숨기기)
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      box.style.display = "none";
+      chrome.storage.local.set({ toolbarVisible: false });
     });
 
     // 🚫 현재 페이지 차단
