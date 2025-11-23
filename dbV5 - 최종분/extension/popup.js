@@ -132,14 +132,3 @@ btnUnblock.addEventListener("click", async () => {
     });
     msgBox.textContent = "차단 해제 설정됨";
 });
-
-// 툴바 표시 버튼 로직
-const btnShowToolbar = document.getElementById("btn-show-toolbar");
-btnShowToolbar.addEventListener("click", async () => {
-  const tab = await getCurrentTab();
-  // storage에 툴바 표시 상태 저장
-  chrome.storage.local.set({ toolbarVisible: true });
-  // contentScript에 메시지 전송하여 툴바 표시
-  chrome.tabs.sendMessage(tab.id, { type: "SHOW_TOOLBAR" });
-  msgBox.textContent = "버튼 툴바가 표시됩니다.";
-});

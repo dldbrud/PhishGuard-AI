@@ -23,7 +23,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["blocked.html", "blocked.js", "blocked.css", "contentScript.js"],
+      "resources": ["blocked.html", "blocked.js", "blocked.css"],
       "matches": ["<all_urls>"]
     }
   ]

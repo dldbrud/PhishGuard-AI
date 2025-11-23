@@ -2,13 +2,13 @@
   // 1. URL 파라미터 읽기
   const params = new URLSearchParams(window.location.search);
   const reasonRaw = params.get("reason");
-  const blockedUrl = params.get("blocked_url");
 
   // 2. DOM 요소 연결
   const scoreEl = document.getElementById("display-score");
   const levelEl = document.getElementById("display-level");
   const gsbEl = document.getElementById("gsb-result");
   const geminiEl = document.getElementById("gemini-result");
+  const returnBtn = document.getElementById("btn-return-safe"); // ✅ 버튼 ID 연결
 
   // 3. 초기값 설정 및 파싱
   let score = 90;
@@ -62,5 +62,13 @@
 
     if (gsbEl) gsbEl.textContent = gsbText;
     if (geminiEl) geminiEl.textContent = geminiText;
+  }
+  
+  // 5. 버튼 리스너 (CSP 안전성 확보)
+  if (returnBtn) {
+      returnBtn.addEventListener("click", () => {
+          // 뒤로 가기 루프를 피하고 구글로 안전하게 리다이렉트
+          window.location.href = 'https://www.google.com';
+      });
   }
 })();

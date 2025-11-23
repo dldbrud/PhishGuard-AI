@@ -48,12 +48,7 @@ async def evaluate_url(
     return DecisionResponse(**decision_data)
   except Exception as e:
     print("[/api/evaluate] error:", e)
-    # 에러 발생 시 안전으로 처리 (차단하지 않음)
-    return DecisionResponse(
-      decision="SAFE",
-      reason="Error during evaluation, defaulting to safe",
-      suggested_official_url=None
-    )
+    raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 # 📣 신고 (신고 로그 저장)

@@ -22,7 +22,7 @@ function getClientId() {
   });
 }
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender) => {
   // 1️⃣ URL 자동 평가
   if (msg.type === "CHECK_URL" && sender.tab) {
     const tabId = sender.tab.id;
@@ -36,9 +36,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             const reason = encodeURIComponent(
               data.reason || "위험한 사이트로 판단되었습니다."
             );
-            const originalUrl = encodeURIComponent(url);
             chrome.tabs.update(tabId, {
-              url: `${BLOCK_PAGE}?reason=${reason}&blocked_url=${originalUrl}`,
+              url: `${BLOCK_PAGE}?reason=${reason}`,
             });
           }
         })
@@ -64,8 +63,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           const reason = encodeURIComponent(
             "사용자가 직접 차단한 사이트입니다."
           );
-          const originalUrl = encodeURIComponent(url);
-          chrome.tabs.update(tabId, { url: `${BLOCK_PAGE}?reason=${reason}&blocked_url=${originalUrl}` });
+          chrome.tabs.update(tabId, { url: `${BLOCK_PAGE}?reason=${reason}` });
         })
         .catch((err) =>
           console.error("[PhishingGuard] PG_BLOCK_URL 에러:", err)
@@ -74,22 +72,18 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   // 3️⃣ 개인 차단 해제
-  if (msg.type === "PG_UNBLOCK_URL" && sender.tab) {
+  if (msg.type === "PG_UNBLOCK_URL") {
     const url = msg.url;
     if (!url) return;
 
     getClientId().then((clientId) => {
       postJson("/api/remove-override", { client_id: clientId, url })
-        .then(() => {
-          console.log("[PhishingGuard] 개인 차단 해제 완료:", url);
-          // sendResponse로 응답 전송
-          sendResponse({ success: true });
-        })
-        .catch((err) => {
-          console.error("[PhishingGuard] PG_UNBLOCK_URL 에러:", err);
-          sendResponse({ success: false });
-        });
+        .then(() =>
+          console.log("[PhishingGuard] 개인 차단 해제 완료:", url)
+        )
+        .catch((err) =>
+          console.error("[PhishingGuard] PG_UNBLOCK_URL 에러:", err)
+        );
     });
-    return true; // 비동기 응답을 위해 true 반환
   }
 });
