@@ -1,7 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "PhishingGuard Tester",
+  "name": "PhishingGuard",
   "version": "1.0",
+  "description": "피싱 링크를 실시간으로 감지하고 사용자에게 경고를 표시하는 보안 확장 프로그램입니다.",
+  "icons": {
+    "16": "icon16.png"
+  },
   "permissions": ["activeTab", "tabs", "storage"],
   "host_permissions": [
     "http://localhost:8000/*",
