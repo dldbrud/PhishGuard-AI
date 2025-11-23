@@ -27,5 +27,3 @@ def get_connection():
     except Exception as e:
         print(f"[DB 연결 오류] {e}")
         return None
-
-# 보안성을 위해 .env 파일 별도 관리함.

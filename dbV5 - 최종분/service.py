@@ -81,7 +81,7 @@ def check_url(client_id: str, normalized_url: str) -> int:
         print("[check_url] DB 연결 실패")
         return 0
 
-    # ✅ 정규화 후 해시
+    # 정규화 후 해시
     normalized_url = normalize_url(normalized_url)
     url_hash = _make_url_hash(normalized_url)
 
@@ -133,7 +133,7 @@ def report_url(client_id: str, normalized_url: str) -> bool:
         print("[report_url] DB 연결 실패")
         return False
 
-    # ✅ 정규화 후 저장
+    # 정규화 후 저장
     normalized_url = normalize_url(normalized_url)
     url_hash = _make_url_hash(normalized_url)
 
@@ -166,7 +166,7 @@ def override_url(client_id: str, normalized_url: str, decision: int) -> bool:
         print("[override_url] DB 연결 실패")
         return False
 
-    # ✅ 정규화 후 해시
+    # 정규화 후 해시
     normalized_url = normalize_url(normalized_url)
     url_hash = _make_url_hash(normalized_url)
 
@@ -205,7 +205,7 @@ def remove_override_url(client_id: str, normalized_url: str) -> bool:
         print("[remove_override_url] DB 연결 실패")
         return False
 
-    # ✅ 정규화 후 해시
+    # 정규화 후 해시
     normalized_url = normalize_url(normalized_url)
     url_hash = _make_url_hash(normalized_url)
 
@@ -225,7 +225,7 @@ def remove_override_url(client_id: str, normalized_url: str) -> bool:
         conn.close()
 
 
-# ✅ 개인 차단 목록 조회 (플로팅 "내 차단 목록" 용)
+# 개인 차단 목록 조회 (플로팅 "내 차단 목록" 용)
 def get_user_blocked_urls(client_id: str) -> List[str]:
     try:
         user_id = _get_or_create_user_id(client_id)
