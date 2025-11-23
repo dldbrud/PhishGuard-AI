@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "PhishingGuard Tester",
+  "version": "1.0",
+  "permissions": ["activeTab", "tabs", "storage"],
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PhishingGuard"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked.html", "blocked.js", "blocked.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
