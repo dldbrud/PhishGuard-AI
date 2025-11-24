@@ -149,11 +149,11 @@
       if (levelEl) {
         levelEl.style.display = "block"
         if (score >= 80) {
-          levelEl.textContent = "(심각한 위험)"
+          levelEl.textContent = "(위험)"
         } else if (score >= 50) {
           levelEl.textContent = "(주의 요망)"
         } else {
-          levelEl.textContent = "(비교적 안전)"
+          levelEl.textContent = "(안전)"
         }
       }
     }
@@ -199,28 +199,79 @@
   if (detailBtn) {
     detailBtn.addEventListener("click", () => {
       if (detailContent) {
-        const detailText = detailMessages.join("\n\n")
+        detailContent.innerHTML = ""
 
+        // AI 상세 분석 섹션
+        const aiAnalysisMessages = detailMessages.filter(msg => msg.includes("🔍 AI 상세 분석"))
+        if (aiAnalysisMessages.length > 0) {
+          const aiSection = document.createElement("div")
+          aiSection.className = "detail-section"
+          
+          const aiTitle = document.createElement("div")
+          aiTitle.className = "detail-section-title"
+          aiTitle.innerHTML = "🔍 AI 상세 분석"
+          
+          const aiContent = document.createElement("div")
+          aiContent.className = "detail-section-content"
+          let aiText = aiAnalysisMessages[0].replace("🔍 AI 상세 분석:\n\n", "")
+          // 마침표 뒤에 줄바꿈 추가
+          aiText = aiText.replace(/\. /g, ".\n")
+          aiContent.textContent = aiText
+          
+          aiSection.appendChild(aiTitle)
+          aiSection.appendChild(aiContent)
+          detailContent.appendChild(aiSection)
+        }
+
+        // 공식 사이트 섹션
         if (officialUrl) {
-          const parts = detailText.split(officialUrl)
-          detailContent.innerHTML = ""
+          const officialSection = document.createElement("div")
+          officialSection.className = "detail-section official-site-section"
+          
+          const officialTitle = document.createElement("div")
+          officialTitle.className = "detail-section-title"
+          officialTitle.innerHTML = "➡️ 공식 사이트"
+          
+          const officialContent = document.createElement("div")
+          officialContent.className = "detail-section-content"
+          
+          const link = document.createElement("a")
+          link.href = officialUrl
+          link.textContent = officialUrl
+          link.target = "_blank"
+          
+          const notice = document.createElement("p")
+          notice.textContent = "안전을 위해 공식 사이트로 이동하시기 바랍니다."
+          notice.style.marginTop = "10px"
+          notice.style.marginBottom = "0"
+          notice.style.color = "#666"
+          
+          officialContent.appendChild(link)
+          officialContent.appendChild(notice)
+          
+          officialSection.appendChild(officialTitle)
+          officialSection.appendChild(officialContent)
+          detailContent.appendChild(officialSection)
+        }
 
-          for (let i = 0; i < parts.length; i++) {
-            detailContent.appendChild(document.createTextNode(parts[i]))
-
-            if (i < parts.length - 1) {
-              const link = document.createElement("a")
-              link.href = officialUrl
-              link.textContent = officialUrl
-              link.style.color = "#3b82f6"
-              link.style.textDecoration = "underline"
-              link.style.fontWeight = "600"
-              link.target = "_blank"
-              detailContent.appendChild(link)
-            }
-          }
-        } else {
-          detailContent.innerText = detailText
+        // 기타 메시지
+        const otherMessages = detailMessages.filter(msg => 
+          !msg.includes("🔍 AI 상세 분석") && 
+          !msg.includes("➡️ 공식 사이트") &&
+          !msg.includes("━")
+        )
+        
+        if (otherMessages.length > 0) {
+          const otherSection = document.createElement("div")
+          otherSection.className = "detail-section"
+          otherSection.style.borderLeftColor = "#e74c3c"
+          
+          const otherContent = document.createElement("div")
+          otherContent.className = "detail-section-content"
+          otherContent.textContent = otherMessages.join("\n\n")
+          
+          otherSection.appendChild(otherContent)
+          detailContent.appendChild(otherSection)
         }
       }
       if (modal) {
