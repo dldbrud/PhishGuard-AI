@@ -13,130 +13,78 @@ REASON_SAFE = "SAFE"
 
 
 async def get_decision(client_id: str, client: httpx.AsyncClient, url: str) -> dict:
-    # 1) DB 우선 확인 (전역 / 개인)
+    """
+    URL 위험도 판단 프로세스:
+    1. DB 전역/개인 차단 확인 (가장 빠른 응답)
+    2. Google Safe Browsing 확인 (악성코드/피싱 DB)
+    3. Gemini AI 종합 분석 (오타 도메인, 불법 도박, 성인 콘텐츠, 피싱, 사기 등 종합 판단)
+    """
+    print(f"[v0 DEBUG] ========================================")
+    print(f"[v0 DEBUG] get_decision 호출: {url}")
+    print(f"[v0 DEBUG] ========================================")
+    
     if client_id:
         is_blocked = service.check_url(client_id, url)
         if is_blocked == 2:
             # 전역 차단 (phishing_sites, 도메인/URL)
+            global_info = service.get_global_info(url)
+            ai_reason = global_info.get("ai_reason") if global_info else "전역 차단 목록에 등록된 위험 사이트입니다."
+            suggested_url = global_info.get("official_url") if global_info else None
             return {
                 "decision": "BLOCK",
                 "reason": REASON_DB_GLOBAL,
-                "suggested_official_url": None,
+                "ai_reason": ai_reason,
+                "suggested_official_url": suggested_url,
             }
         if is_blocked == 1:
             # 개인 차단
             return {
                 "decision": "BLOCK",
                 "reason": REASON_DB_USER,
+                "ai_reason": "사용자가 직접 차단한 사이트입니다.",
                 "suggested_official_url": None,
             }
 
-    # 2) 30일 캐시 먼저 확인
-    cache = service.get_ai_cache(url, max_age_days=30)
-    if cache is not None:
-        gsb_status = cache.get("gsb_status")
-        score = cache.get("ai_score") or 0
-        ai_reason = cache.get("ai_reason")
-        suggested_url = cache.get("suggested_official_url")
-
-        # GSB가 예전에 위험 판정한 URL이면 그대로 BLOCK
-        if gsb_status == safebrowsing_client.GSB_STATUS_DANGEROUS:
-            return {
-                "decision": "BLOCK",
-                "reason": REASON_GSB_MATCH,
-                "suggested_official_url": suggested_url,
-            }
-
-        # Gemini 점수 기준으로 재판정
-        if score >= 80:
-            # 전역 차단도 보장
-            service.add_global_block(url, ai_reason=ai_reason, suggested_url=suggested_url)
-            return {
-                "decision": "BLOCK",
-                "reason": f"{REASON_GEMINI_BLOCK} (Score: {score})",
-                "suggested_official_url": suggested_url,
-            }
-
-        if score >= 50:
-            return {
-                "decision": "WARN",
-                "reason": f"{REASON_GEMINI_WARN} (Score: {score})",
-                "suggested_official_url": suggested_url,
-            }
-
-        return {
-            "decision": "SAFE",
-            "reason": REASON_SAFE,
-            "suggested_official_url": suggested_url,
-        }
-
-    # 3) 캐시에 없으면 → GSB 실제 호출
     gsb_status, _ = await safebrowsing_client.check_safe_browsing(url, client)
 
     if gsb_status == safebrowsing_client.GSB_STATUS_DANGEROUS:
+        ai_reason = "Google Safe Browsing: 악성코드 또는 피싱 사이트로 등록된 위험한 웹사이트입니다."
         # 전역 DB에도 기록
         service.add_global_block(
             url,
-            ai_reason="Google Safe Browsing: Malware/Social Engineering",
-            suggested_url=None,
-        )
-        # 캐시에도 저장
-        service.upsert_ai_cache(
-            url,
-            gsb_status=gsb_status,
-            ai_score=None,
-            ai_reason="GSB: Malware/Social Engineering",
+            ai_reason=ai_reason,
             suggested_url=None,
         )
         return {
             "decision": "BLOCK",
             "reason": REASON_GSB_MATCH,
+            "ai_reason": ai_reason,
             "suggested_official_url": None,
         }
 
-    # 4) GSB 안전일 때만 Gemini 호출
     try:
+        print(f"[v0 DEBUG] Gemini AI 종합 분석 시작...")
         gemini_result = await gemini_client.analyze_url_with_gemini(url, client)
     except httpx.HTTPStatusError as e:
         # 429 등 쿼터 초과
         if e.response is not None and e.response.status_code == 429:
-            # GSB가 이미 SAFE였으므로, 일단 WARN 정도로만 리턴
-            service.upsert_ai_cache(
-                url,
-                gsb_status=gsb_status,
-                ai_score=None,
-                ai_reason=REASON_GEMINI_RATE_LIMIT,
-                suggested_url=None,
-            )
             return {
                 "decision": "WARN",
                 "reason": REASON_GEMINI_RATE_LIMIT,
+                "ai_reason": "AI 분석 요청 한도 초과로 일시적으로 분석할 수 없습니다.",
                 "suggested_official_url": None,
             }
-        # 기타 에러
-        service.upsert_ai_cache(
-            url,
-            gsb_status=gsb_status,
-            ai_score=None,
-            ai_reason="GEMINI_ERROR",
-            suggested_url=None,
-        )
         return {
             "decision": "SAFE",
             "reason": "GEMINI_ERROR",
+            "ai_reason": "AI 분석 중 오류가 발생했습니다.",
             "suggested_official_url": None,
         }
     except Exception:
-        service.upsert_ai_cache(
-            url,
-            gsb_status=gsb_status,
-            ai_score=None,
-            ai_reason="GEMINI_UNKNOWN_ERROR",
-            suggested_url=None,
-        )
         return {
             "decision": "SAFE",
             "reason": "GEMINI_UNKNOWN_ERROR",
+            "ai_reason": "AI 분석 중 알 수 없는 오류가 발생했습니다.",
             "suggested_official_url": None,
         }
 
@@ -144,35 +92,29 @@ async def get_decision(client_id: str, client: httpx.AsyncClient, url: str) -> d
     ai_reason = gemini_result.get("reason")
     suggested_url = gemini_result.get("suggested_url")
 
-    # 새 결과 캐시에 저장
-    service.upsert_ai_cache(
-        url,
-        gsb_status=gsb_status,
-        ai_score=score,
-        ai_reason=ai_reason,
-        suggested_url=suggested_url,
-    )
-
-    # HIGH RISK → 전역 차단 + BLOCK
     if score >= 80:
+        # 고위험: 전역 차단 DB에 등록
         service.add_global_block(url, ai_reason=ai_reason, suggested_url=suggested_url)
         return {
             "decision": "BLOCK",
             "reason": f"{REASON_GEMINI_BLOCK} (Score: {score})",
+            "ai_reason": ai_reason or "AI 분석 결과 고위험 사이트로 판정되었습니다.",
             "suggested_official_url": suggested_url,
         }
 
-    # WARN
+    # 중간 위험: 경고
     if score >= 50:
         return {
             "decision": "WARN",
             "reason": f"{REASON_GEMINI_WARN} (Score: {score})",
+            "ai_reason": ai_reason or "AI 분석 결과 의심스러운 사이트입니다.",
             "suggested_official_url": suggested_url,
         }
 
-    # SAFE
+    # 안전
     return {
         "decision": "SAFE",
         "reason": REASON_SAFE,
+        "ai_reason": ai_reason,
         "suggested_official_url": suggested_url,
     }
