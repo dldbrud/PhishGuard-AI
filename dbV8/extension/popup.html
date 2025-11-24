@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishingGuard</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">🛡️ PhishingGuard</div>
+  
+  <div class="container">
+    <div class="status-card">
+      <div id="loader" class="loading">
+        <span class="spinner"></span>분석 중...
+      </div>
+      <div id="result-area" style="display: none;">
+        <div class="status-text" id="status-label">안전함</div>
+        <div class="score-display" id="score-val">--</div>
+        <div class="reason-text" id="reason-text"></div>
+      </div>
+    </div>
+
+    <!-- 버튼 그룹 -->
+    <div class="btn-group">
+      <!-- 차단 버튼 (기본) -->
+      <button id="btn-block">🚫 이 사이트 차단</button>
+      <!-- 해제 버튼 (차단된 상태일 때 보임) -->
+      <button id="btn-unblock" style="display: none;">✅ 차단 해제</button>
+    </div>
+
+    <!-- 자세히 보기 버튼 -->
+    <div class="btn-group">
+      <button id="btn-detail" style="display:none;">🔍 자세히 보기</button>
+    </div>
+
+    <div id="msg"></div>
+  </div>
+
+  <!-- 상세 분석 모달 -->
+  <div id="detail-modal" style="
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.4);
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+  ">
+    <div style="
+        background:#fff;
+        padding:12px;
+        border-radius:8px;
+        width:260px;
+        max-height:300px;
+        overflow-y:auto;
+        font-size:12px;
+        line-height:1.4;
+    ">
+      <div style="font-weight:bold; margin-bottom:6px;">AI 상세 분석</div>
+      <div id="detail-text"></div>
+      <button id="btn-close-modal" style="
+          margin-top:10px;
+          width:100%;
+          padding:6px 0;
+          border:none;
+          border-radius:6px;
+          background:#3b82f6;
+          color:white;
+          cursor:pointer;
+      ">닫기</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
