@@ -18,7 +18,7 @@
   const detailMessages = [] // 상세 메시지 저장용
   let isGlobalBlocked = false
   let isUserBlocked = false
-  let score = 90
+  let score = 0
   let officialUrl = null
 
   function createCleanSummary(fullReason) {
@@ -66,7 +66,6 @@
         "🚨 Google Safe Browsing에서 위험 사이트로 등록되어 있습니다.\n\n이 사이트는 악성코드, 피싱, 또는 기타 보안 위협을 포함할 수 있습니다.",
       )
       isGlobalBlocked = true
-      score = 100
     }
 
     if (decoded.includes("GEMINI_HIGH_RISK")) {
@@ -96,8 +95,8 @@
       })
       const data = await res.json()
 
-      // 🔥 ai_cache에 저장된 점수를 그대로 사용 (문자/숫자 모두 처리)
-      if (data.ai_score != null) {
+      // 🔥 ai_cache에 저장된 점수를 사용 (단, reason에서 파싱한 점수가 없을 때만)
+      if (score === 0 && data.ai_score != null) {
         const n = Number(data.ai_score)
         if (!Number.isNaN(n)) {
           score = n
@@ -134,6 +133,11 @@
       await loadGlobalReason()
     }
 
+    // 점수 보정: 0점이고 사용자 차단이 아니면 100점으로 설정
+    if (score === 0 && !isUserBlocked) {
+      score = 100
+    }
+
     if (isUserBlocked) {
       if (scoreEl) scoreEl.style.display = "none"
       if (levelEl) levelEl.style.display = "none"
@@ -144,7 +148,13 @@
       }
       if (levelEl) {
         levelEl.style.display = "block"
-        levelEl.textContent = score >= 80 ? "(심각한 위험)" : "(주의 요망)"
+        if (score >= 80) {
+          levelEl.textContent = "(심각한 위험)"
+        } else if (score >= 50) {
+          levelEl.textContent = "(주의 요망)"
+        } else {
+          levelEl.textContent = "(비교적 안전)"
+        }
       }
     }
 

@@ -94,8 +94,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       const info = await infoRes.json();
 
-      // ai_cache / phishing_sites에 저장된 점수 우선 사용
-      if (typeof info.ai_score === "number") {
+      // ai_cache / phishing_sites에 저장된 점수 사용 (단, reason에서 파싱한 점수가 없을 때만)
+      if (score === 0 && info.ai_score != null) {
         const n = Number(info.ai_score);
         if (!Number.isNaN(n)) {
           score = n;
@@ -161,11 +161,11 @@ function updateScoreUI(score, decision, reason) {
   reasonText.textContent = reason || "분석 내용 없음";
   scoreVal.classList.remove("safe", "warn", "danger");
   
-  if (score >= 80 || decision === "BLOCK") {
+  if (score >= 80) {
     scoreVal.classList.add("danger");
     statusLabel.textContent = "위험 (Phishing)";
     statusLabel.style.color = "#e74c3c";
-  } else if (score >= 50 || decision === "WARN") {
+  } else if (score >= 50) {
     scoreVal.classList.add("warn");
     statusLabel.textContent = "주의 요망";
     statusLabel.style.color = "#f39c12";
