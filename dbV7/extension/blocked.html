@@ -19,14 +19,35 @@
       <!-- ✅ 통합된 하나의 결과창 -->
       <div class="analysis-box">
         <div class="analysis-item">
-          <span class="label">🔍 분석 결과</span>
-          <span class="content" id="unified-result">결과를 불러오는 중...</span>
+          <span class="label">🔍 차단 이유</span>
+          <!-- 차단 이유와 공식 사이트 추천을 함께 표시 -->
+          <span class="content" id="unified-result-summary">결과를 불러오는 중...</span>
+          <div id="official-site-box" style="display:none; margin-top: 12px;">
+            <span class="label">✅ 공식 사이트</span>
+            <a href="#" id="official-site-link" class="official-link" target="_blank" rel="noopener noreferrer"></a>
+          </div>
         </div>
       </div>
+      
+      <!-- 자세히 알아보기 버튼을 중앙 하단으로 이동 -->
+      <button id="btn-show-detail" class="btn-detail" style="display:none;">자세히 알아보기</button>
     </div>
 
     <div class="action-area">
       <button id="btn-return-safe" class="btn-back">안전한 페이지로 돌아가기</button>
+    </div>
+  </div>
+
+  <!-- 상세 정보 모달 추가 -->
+  <div id="detail-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🔍 상세 분석 결과</h3>
+        <button id="btn-close-modal" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body" id="detail-content">
+        <!-- 상세 내용이 여기에 표시됩니다 -->
+      </div>
     </div>
   </div>
 
