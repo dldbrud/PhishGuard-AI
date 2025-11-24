@@ -1,0 +1,117 @@
+@charset "utf-8";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Pretendard', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #333;
+}
+
+.container {
+  width: 100%;
+  max-width: 700px;
+  padding: 20px;
+  text-align: center;
+}
+
+.logo-area {
+  margin-bottom: 30px;
+  font-weight: 800;
+  font-size: 24px;
+  color: #2c3e50;
+  letter-spacing: -0.5px;
+}
+
+/* 메인 빨간 박스 (핵심 디자인) */
+.danger-card {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  border-radius: 16px;
+  padding: 50px 40px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+/* 점수 텍스트 */
+.score-title {
+  font-size: 48px;
+  font-weight: 800;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.score-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.9;
+  margin-top: -10px;
+}
+
+.divider {
+  width: 60px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+  margin: 10px 0;
+}
+
+/* 상세 분석 내용 영역 */
+.analysis-box {
+  background-color: rgba(0, 0, 0, 0.15);
+  width: 100%;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+}
+
+.analysis-item {
+  margin-bottom: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.analysis-item:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-weight: 700;
+  color: #ffdede;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.content {
+  color: white;
+  font-weight: 400;
+}
+
+/* 하단 버튼 영역 */
+.action-area {
+  margin-top: 30px;
+}
+
+.btn-back {
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn-back:hover {
+  background-color: #34495e;
+}
