@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishingGuard</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">PhishingGuard</div>
+  
+  <div class="container">
+    <div class="status-card">
+      <div id="loader" class="loading">
+        <span class="spinner"></span>분석 중...
+      </div>
+      <div id="result-area" style="display: none;">
+        <div class="status-text" id="status-label">안전함</div>
+        <div class="score-display" id="score-val">--</div>
+        <div class="reason-text" id="reason-text"></div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button id="btn-block">이 사이트 차단</button>
+      <button id="btn-unblock">차단 해제</button>
+    </div>
+    <div id="msg"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
