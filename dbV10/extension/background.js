@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = "http://49.50.135.32:8000";
 const BLOCK_PAGE = chrome.runtime.getURL("blocked.html");
 
 async function postJson(path, body) {

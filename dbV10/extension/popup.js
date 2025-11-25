@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = "http://49.50.135.32:8000";
 
 const loader = document.getElementById("loader");
 const resultArea = document.getElementById("result-area");

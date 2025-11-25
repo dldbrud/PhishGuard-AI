@@ -1,6 +1,6 @@
 (() => {
   const FLOATING_ID = "pg-floating-control";
-  const API_BASE = "http://localhost:8000/api";
+  const API_BASE = "http://49.50.135.32:8000/api";
   const EXT_BASE = chrome.runtime.getURL("");
 
   // ✅ 1. 페이지 진입 시 URL 검사

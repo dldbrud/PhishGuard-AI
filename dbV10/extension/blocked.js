@@ -12,7 +12,7 @@
   const detailContent = document.getElementById("detail-content")
   const closeModalBtn = document.getElementById("btn-close-modal")
 
-  const API_BASE = "http://localhost:8000/api"
+  const API_BASE = "http://49.50.135.32:8000/api";
 
   const messages = []
   const detailMessages = [] // 상세 메시지 저장용
