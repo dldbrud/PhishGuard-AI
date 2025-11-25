@@ -1,0 +1,122 @@
+@charset "utf-8";
+
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 320px;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.header {
+  background: #2c3e50;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.container {
+  padding: 20px;
+}
+
+/* 분석 결과 카드 */
+.status-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.score-display {
+  font-size: 42px;
+  font-weight: 800;
+  margin: 10px 0;
+  color: #bdc3c7; /* 로딩 색상 */
+}
+
+.score-display.safe { color: #27ae60; }
+.score-display.warn { color: #f39c12; }
+.score-display.danger { color: #e74c3c; }
+
+.status-text {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.reason-text {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+  background: #f1f3f5;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+  margin-top: 10px;
+  word-break: break-all; /* 긴 URL 등이 있어도 줄바꿈 */
+}
+
+/* 버튼 그룹 */
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#btn-block {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+#btn-unblock {
+  background-color: #95a5a6;
+  color: #fff;
+  display: none; /* 기본 숨김 (JS 제어) */
+}
+
+/* 로딩 애니메이션 */
+.loading {
+  font-size: 12px;
+  color: #888;
+}
+
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ccc;
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 5px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#msg {
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+  margin-top: 10px;
+}
