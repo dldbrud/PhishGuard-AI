@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishingGuard 팝업 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-card {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f9f9f9;
+        }
+        .test-card h2 {
+            margin-top: 0;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .btn-safe { background: #27ae60; color: white; }
+        .btn-warn { background: #f39c12; color: white; }
+        .btn-block { background: #e74c3c; color: white; }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background: white;
+        }
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .score.safe { color: #27ae60; }
+        .score.warn { color: #f39c12; }
+        .score.danger { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <h1>🛡️ PhishingGuard 팝업 테스트</h1>
+    <p>아래 버튼을 클릭하면 각 상태의 응답을 시뮬레이션합니다.</p>
+
+    <div class="test-card">
+        <h2>테스트 버튼</h2>
+        <button class="btn-safe" onclick="testAPI('safe')">✅ 안전 (10점)</button>
+        <button class="btn-warn" onclick="testAPI('warn')">⚠️ 경고 (65점)</button>
+        <button class="btn-block" onclick="testAPI('block')">🚫 차단 (95점)</button>
+    </div>
+
+    <div id="result" class="result" style="display: none;">
+        <h3>응답 결과</h3>
+        <div><strong>판정:</strong> <span id="decision"></span></div>
+        <div class="score" id="score"></div>
+        <div><strong>이유:</strong> <span id="reason"></span></div>
+        <div><strong>추천 URL:</strong> <span id="suggested"></span></div>
+    </div>
+
+    <script>
+        async function testAPI(type) {
+            try {
+                const res = await fetch(`http://localhost:8000/test/${type}`);
+                const data = await res.json();
+
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('decision').textContent = data.decision;
+                
+                const scoreEl = document.getElementById('score');
+                scoreEl.textContent = data.score + '점';
+                scoreEl.className = 'score';
+                
+                if (data.score >= 80) {
+                    scoreEl.classList.add('danger');
+                } else if (data.score >= 50) {
+                    scoreEl.classList.add('warn');
+                } else {
+                    scoreEl.classList.add('safe');
+                }
+                
+                document.getElementById('reason').textContent = data.reason;
+                document.getElementById('suggested').textContent = data.suggested_official_url || '없음';
+            } catch (e) {
+                alert('에러: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>
