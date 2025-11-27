@@ -47,13 +47,14 @@ http://127.0.0.1:8000/
 
 {"message": "FastAPI is running successfully!"}
 
----
-### 🔒 PhishGuard-AI 주요 세부 기능 요약
+```
 
- + AI 기반 피싱 사이트 탐지 및 차단 (Google Gemini, Safe Browsing API 활용)
- + 실시간 URL 분석 및 위험 등급(안전/경고/위험) 판정
- + 사용자별 차단/허용 목록 관리
- + 크롬 확장 프로그램 UI(차단, 차단 목록, 분석하기 버튼)
- + 분석 결과 캐싱(24시간)
- + 관리자/사용자별 통계 및 로그 관리
- + MySQL 연동 및 FastAPI 서버 운영
+### 🔒 PhishGuard-AI 세부 기능 
+
++ AI 기반 피싱 사이트 탐지 및 차단 (Google Gemini, Safe Browsing API 활용)
++ 실시간 URL 분석 및 위험 등급(안전/경고/위험) 판정
++ 사용자별 차단/허용 목록 관리
++ 크롬 확장 프로그램 UI(차단, 차단 목록, 분석하기 버튼)
++ 분석 결과 캐싱(24시간)
++ 관리자/사용자별 통계 및 로그 관리
++ MySQL 연동 및 FastAPI 서버 운영
