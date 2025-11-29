@@ -1,41 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhishingGuard Privacy Policy</title>
+  <meta charset="UTF-8" />
+  <title>PhishingGuard Privacy Policy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      line-height: 1.7;
+      color: #222;
+    }
+    h1 {
+      margin-bottom: 8px;
+    }
+    h2 {
+      margin-top: 28px;
+      margin-bottom: 8px;
+    }
+    .date {
+      color: #555;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+    ul {
+      margin-top: 4px;
+      margin-bottom: 12px;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+  </style>
 </head>
-<body style="max-width: 800px; margin: 40px auto; font-family: Arial, sans-serif; line-height: 1.6;">
-    <h1>PhishingGuard Privacy Policy</h1>
-    <p><strong>Last Updated: 2025-01-01</strong></p>
+<body>
+  <h1>PhishingGuard Privacy Policy</h1>
+  <p class="date">Last Updated: 2025-11-29</p>
 
-    <h2>1. Data We Collect</h2>
-    <p>
-        PhishingGuard does <strong>not collect any personally identifiable information</strong>.  
-        The extension may analyze the URL and HTML content of the page you visit, but all processing is performed 
-        <strong>locally on your browser</strong> and no data is transmitted externally.
-    </p>
+  <h2>1. Data We Collect</h2>
+  <p>PhishingGuard collects only the minimum data required to detect phishing risks:</p>
+  <ul>
+    <li>
+      <strong>Client ID</strong> – a randomly generated identifier stored locally in your browser,
+      used only to apply user-specific overrides and maintain consistent evaluations.
+      This ID is never sent to external services.
+    </li>
+    <li>
+      <strong>Visited URL</strong> – the URL (or its normalized/hash form) that is sent securely
+      to the PhishingGuard server for phishing analysis.
+    </li>
+  </ul>
+  <p>PhishingGuard does not collect any personally identifiable information (PII).</p>
 
-    <h2>2. Data Storage</h2>
-    <p>PhishingGuard does not store, save, or upload any user data to external servers.</p>
+  <h2>2. How We Use the Data</h2>
+  <p>The collected URL is used solely for the following purposes:</p>
+  <ul>
+    <li>Checking against known phishing and blacklist databases</li>
+    <li>Verifying safety using Google Safe Browsing API</li>
+    <li>Analyzing potential phishing risk using AI models (e.g., Gemini)</li>
+  </ul>
+  <p>We do not use collected data for analytics, advertising, or profiling.</p>
 
-    <h2>3. Data Sharing</h2>
-    <p>
-        We do not share any data with third parties.  
-        No data is used for advertising, analytics, or tracking.
-    </p>
+  <h2>3. Data Storage</h2>
+  <p>PhishingGuard does not store safe or non-threatening URLs.</p>
+  <p>Only the following types of data may be stored:</p>
+  <ul>
+    <li>URLs (or URL hashes) confirmed as phishing threats</li>
+    <li>URLs explicitly reported by users</li>
+    <li>AI-generated explanations or detection reasons</li>
+  </ul>
+  <p>We do not store personal data or detailed browsing history.</p>
 
-    <h2>4. Local Processing</h2>
-    <p>
-        All phishing detection logic happens inside the browser.  
-        The extension does not communicate with any external API to check visited websites.
-    </p>
+  <h2>4. Data Sharing and External Services</h2>
+  <p>
+    PhishingGuard does not sell, share, or use any data for advertising, tracking, or analytics.
+  </p>
+  <p>For phishing analysis, URLs may be transmitted to:</p>
+  <ul>
+    <li>Google Safe Browsing API</li>
+    <li>AI analysis services (e.g., Gemini API)</li>
+  </ul>
+  <p>
+    These services receive only the URL being analyzed.
+    No client IDs, cookies, tokens, or any identifiable data are ever transmitted to external services.
+  </p>
+  <p>
+    PhishingGuard does not use cookies, trackers, analytics tools, or advertising technologies.
+  </p>
 
-    <h2>5. Policy Updates</h2>
-    <p>Changes to this Privacy Policy will be reflected in the "Last Updated" date above.</p>
+  <h2>5. Local Processing</h2>
+  <p>
+    Some processing occurs locally within the browser, including:
+  </p>
+  <ul>
+    <li>Client ID management</li>
+    <li>Basic UI functions</li>
+    <li>Domain extraction and parsing</li>
+    <li>Rendering warnings and user interface behavior</li>
+  </ul>
+  <p>No sensitive data is processed locally beyond what is necessary to perform these functions.</p>
 
-    <h2>6. Contact</h2>
-    <p>If you have questions regarding this policy, please contact:</p>
-    <p>Email: <strong>your-email@example.com</strong></p>
+  <h2>6. Policy Updates</h2>
+  <p>
+    Any changes to this Privacy Policy will be reflected in the “Last Updated” date above.
+  </p>
+
+  <h2>7. Contact</h2>
+  <p>
+    If you have questions regarding this policy, please contact:<br />
+    <strong>qwer343733@gmail.com</strong>
+  </p>
 </body>
 </html>
